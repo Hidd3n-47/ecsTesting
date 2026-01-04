@@ -1,0 +1,4 @@
+P4PORT=1666
+P4USER=Christian
+P4CLIENT=ScarlettProject
+P4IGNORE=.p4ignore.txt
