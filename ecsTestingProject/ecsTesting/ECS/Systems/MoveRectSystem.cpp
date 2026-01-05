@@ -16,15 +16,11 @@ void MoveRectSystem::Update(MoveRect* moveRectArray, Position* positions, const 
 
         position->position += moveRect->mDirection;
 
-        if (position->position.x <= 0.0f || position->position.x >= GlobalVariables::screenWidth)
-        {
-            moveRect->mDirection.x *= -1.0f;
-        }
+        bool changeDirection = position->position.x <= 0.0f || position->position.x >= GlobalVariables::screenWidth;
+        moveRect->mDirection.x *= changeDirection ? -1.0f : 1.0f;
 
-        if (position->position.y <= 0.0f || position->position.y >= GlobalVariables::screenHeight)
-        {
-            moveRect->mDirection.y *= -1.0f;
-        }
+        changeDirection = position->position.y <= 0.0f || position->position.y >= GlobalVariables::screenHeight;
+        moveRect->mDirection.y *= changeDirection ? -1.0f : 1.0f;
     }
 }
 #else // MT_ECS.
@@ -56,15 +52,11 @@ void MoveRectSystem::Update()
 
             position->position += moveRect->mDirection;
 
-            if (position->position.x <= 0.0f || position->position.x >= GlobalVariables::screenWidth)
-            {
-                moveRect->mDirection.x *= -1.0f;
-            }
+            bool changeDirection = position->position.x <= 0.0f || position->position.x >= GlobalVariables::screenWidth;
+            moveRect->mDirection.x *= changeDirection ? -1.0f : 1.0f;
 
-            if (position->position.y <= 0.0f || position->position.y >= GlobalVariables::screenHeight)
-            {
-                moveRect->mDirection.y *= -1.0f;
-            }
+            changeDirection = position->position.y <= 0.0f || position->position.y >= GlobalVariables::screenHeight;
+            moveRect->mDirection.y *= changeDirection ? -1.0f : 1.0f;
         }
 
         mCompleted = true;

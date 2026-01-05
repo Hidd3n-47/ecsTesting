@@ -3,7 +3,7 @@
 #include <charconv>
 #include "RunningAverage.h"
 
-static constexpr int TEST_SIZE = 200'000;
+static constexpr int TEST_SIZE = 2'000;
 
 #if !ECS_TEST
 #include <SDL3/SDL.h>
@@ -112,11 +112,16 @@ int main(int, char**)
         auto dt = static_cast<float>(now - startTime) / static_cast<float>(SDL_GetPerformanceFrequency());
         fpsAverage.UpdateAverage(dt);
         // Max frames displayed as: 1234.123 <- total of 8 characters + 1 for null terminating character.
+#if FPS_TITLE
         char title[9];
         std::to_chars(title, title + sizeof(title), 1.0 / fpsAverage.average, std::chars_format::fixed, 3);
         title[sizeof(title) - 1] = '\0';
         SDL_SetWindowTitle(window, title);
+#endif // FPS_TITLE.
     }
+#if !FPS_TITLE
+    std::cout << "Average fps for duration: " << 1.0 / fpsAverage.average << "\n";
+#endif // FPS_TITLE.
 
     GlobalVariables::Destroy();
 
@@ -264,11 +269,16 @@ int main(int, char**)
         auto dt = static_cast<float>(now - startTime) / static_cast<float>(SDL_GetPerformanceFrequency());
         fpsAverage.UpdateAverage(dt);
         // Max frames displayed as: 1234.123 <- total of 8 characters + 1 for null terminating character.
+#if FPS_TITLE
         char title[9];
         std::to_chars(title, title + sizeof(title), 1.0 / fpsAverage.average, std::chars_format::fixed, 3);
         title[sizeof(title) - 1] = '\0';
         SDL_SetWindowTitle(window, title);
+#endif // FPS_TITLE.
     }
+#if !FPS_TITLE
+    std::cout << "Average fps for duration: " << 1.0 / fpsAverage.average << "\n";
+#endif // FPS_TITLE.
 
     GlobalVariables::Destroy();
 

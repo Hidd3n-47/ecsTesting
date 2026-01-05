@@ -15,24 +15,13 @@ void UpdateRectScaleSystem::Update(UpdateRectScale* updateRectArray, Scale* scal
         float possibleNewScale;
         const float len = rect->mMaxScale - rect->mMinScale;
 
-        if (rect->mIncreasing)
-        {
-            const float t = (scale->scale.x - rect->mMinScale) / len;
+        const float t = (scale->scale.x - rect->mMinScale) / len;
 
-            possibleNewScale = rect->mMinScale + (t + rect->mStep) * len;
+        possibleNewScale  = rect->mIncreasing ? rect->mMinScale + (t + rect->mStep) * len : rect->mMaxScale - (t + rect->mStep) * len;
 
-            rect->mIncreasing = !(possibleNewScale >= rect->mMaxScale);
-            possibleNewScale = std::min(possibleNewScale, rect->mMaxScale);
-        }
-        else
-        {
-            const float t = (rect->mMaxScale - scale->scale.x) / len;
+        rect->mIncreasing = (possibleNewScale <= rect->mMinScale);
 
-            possibleNewScale = rect->mMaxScale - (t + rect->mStep) * len;
-
-            rect->mIncreasing = (possibleNewScale <= rect->mMinScale);
-            possibleNewScale = std::max(possibleNewScale, rect->mMinScale);
-        }
+        possibleNewScale  = rect->mIncreasing ? std::min(possibleNewScale, rect->mMaxScale) : std::max(possibleNewScale, rect->mMinScale);
 
         scale->scale = Vec2{ possibleNewScale };
     }
@@ -64,24 +53,13 @@ void UpdateRectScaleSystem::Update()
             float possibleNewScale;
             const float len = rect->mMaxScale - rect->mMinScale;
 
-            if (rect->mIncreasing)
-            {
-                const float t = (scale->scale.x - rect->mMinScale) / len;
+            const float t = (scale->scale.x - rect->mMinScale) / len;
 
-                possibleNewScale = rect->mMinScale + (t + rect->mStep) * len;
+            possibleNewScale  = rect->mIncreasing ? rect->mMinScale + (t + rect->mStep) * len : rect->mMaxScale - (t + rect->mStep) * len;
 
-                rect->mIncreasing = !(possibleNewScale >= rect->mMaxScale);
-                possibleNewScale = std::min(possibleNewScale, rect->mMaxScale);
-            }
-            else
-            {
-                const float t = (rect->mMaxScale - scale->scale.x) / len;
+            rect->mIncreasing = (possibleNewScale <= rect->mMinScale);
 
-                possibleNewScale = rect->mMaxScale - (t + rect->mStep) * len;
-
-                rect->mIncreasing = (possibleNewScale <= rect->mMinScale);
-                possibleNewScale = std::max(possibleNewScale, rect->mMinScale);
-            }
+            possibleNewScale  = rect->mIncreasing ? std::min(possibleNewScale, rect->mMaxScale) : std::max(possibleNewScale, rect->mMinScale);
 
             scale->scale = Vec2{ possibleNewScale };
         }
