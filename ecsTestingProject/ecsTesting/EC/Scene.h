@@ -23,10 +23,14 @@ public:
 
     inline void Update() const
     {
+#if MT_EC
+        //Todo.
+#else // MT_EC
         for (GameObject* go : mGameObjects)
         {
             go->Update(0.0f);
         }
+#endif // !MT_EC.
     }
 
     inline void Render(SDL_Renderer* renderer) const

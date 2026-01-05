@@ -11,6 +11,6 @@ public:
 
     inline static SDL_Texture* blankTexture = nullptr;
 
-    inline static float screenWidth         = 1920.0f;
-    inline static float screenHeight        = 1080.0f;
+    inline static float screenWidth         = 1080.0f;
+    inline static float screenHeight        = 720.0f;
 };

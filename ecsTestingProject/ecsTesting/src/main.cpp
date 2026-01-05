@@ -3,7 +3,7 @@
 #include <charconv>
 #include "RunningAverage.h"
 
-static constexpr int TEST_SIZE = 20'000;
+static constexpr int TEST_SIZE = 200'000;
 
 #if !ECS_TEST
 #include <SDL3/SDL.h>
@@ -103,7 +103,9 @@ int main(int, char**)
 
         Update(scene);
 
+#if GFX
         Render(renderer, scene);
+#endif // GFX.
 
         const uint64_t now = SDL_GetPerformanceCounter();
 
@@ -161,9 +163,18 @@ void Input(bool& running)
 
 void Update(Position* positions, Rotation* rotations, Scale* scales, MoveRect* moveRects, const RotateRect* rotateRects, UpdateRectScale* scaleRects)
 {
+#if MT_ECS
+    MoveRectSystem::ShouldUpdate();
+    UpdateRectScaleSystem::ShouldUpdate();
+    RotateRectSystem::ShouldUpdate();
+
+    while (!MoveRectSystem::IsCompleted() || !UpdateRectScaleSystem::IsCompleted() || !RotateRectSystem::IsCompleted()) {}
+#else // MT_ECS.
     MoveRectSystem::Update(moveRects, positions, TEST_SIZE);
     UpdateRectScaleSystem::Update(scaleRects, scales, TEST_SIZE);
     RotateRectSystem::Update(rotateRects, rotations, TEST_SIZE);
+#endif // !MT_ECS.
+
 }
 
 void Render(SDL_Renderer* renderer, const RectVisual* rectVisualArray, const RectColor* rectColors, const Position* positions, const Rotation* rotations, const Scale* scales)
@@ -229,6 +240,12 @@ int main(int, char**)
 
     GlobalVariables::Init(renderer);
 
+#if MT_ECS
+    MoveRectSystem::Init(moveRects, positions, TEST_SIZE);
+    UpdateRectScaleSystem::Init(scaleRects, scales, TEST_SIZE);
+    RotateRectSystem::Init(rotateRects, rotations, TEST_SIZE);
+#endif // MT_ECS.
+
     bool running = true;
     while (running)
     {
@@ -238,7 +255,9 @@ int main(int, char**)
 
         Update(positions, rotations, scales, moveRects, rotateRects, scaleRects);
 
+#if GFX
         Render(renderer, rectVisuals, rectColors, positions, rotations, scales);
+#endif // GFX.
 
         const uint64_t now = SDL_GetPerformanceCounter();
 
